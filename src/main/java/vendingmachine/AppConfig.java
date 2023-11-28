@@ -17,7 +17,7 @@ public class AppConfig {
 
     private AppConfig() {
         this.outputView = initOutputView();
-        this.inputView = initInputView();
+        this.inputView = initInputView(outputView);
         this.service = initGameService();
         this.controller = initController(service, inputView, outputView);
     }
@@ -30,8 +30,8 @@ public class AppConfig {
         return new OutputView();
     }
 
-    private InputView initInputView() {
-        return new InputView();
+    private InputView initInputView(final OutputView outputView) {
+        return new InputView(outputView);
     }
 
     private Service initGameService() {
