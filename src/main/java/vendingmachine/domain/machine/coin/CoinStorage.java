@@ -29,6 +29,8 @@ public class CoinStorage {
         final List<CoinStorageDto> getCoinsStatus = new ArrayList<>();
         for (Map.Entry<Coin, Integer> entry : coins.entrySet()) {
             final Coin coin = entry.getKey();
+
+
             final int count = entry.getValue();
             getCoinsStatus.add(toDto(coin, count));
         }

@@ -1,7 +1,10 @@
 package vendingmachine.view.input;
 
 import camp.nextstep.edu.missionutils.Console;
-import vendingmachine.view.input.validator.ReadAmountValidator;
+import java.util.List;
+import vendingmachine.dto.ProductDto;
+import vendingmachine.view.input.converter.ReadAmountConverter;
+import vendingmachine.view.input.converter.ReadProductsConverter;
 import vendingmachine.view.output.OutputView;
 
 public class InputView {
@@ -18,7 +21,12 @@ public class InputView {
 
     public int readAmount() {
         outputView.printReadAmountMessage();
-        return ReadAmountValidator.validateAmount(readLine());
+        return ReadAmountConverter.convertAmount(readLine());
+    }
+
+    public List<ProductDto> readProducts() {
+        outputView.printReadProductsMessage();
+        return ReadProductsConverter.convertProducts(readLine());
     }
 
 

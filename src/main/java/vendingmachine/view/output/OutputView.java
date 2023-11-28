@@ -33,6 +33,11 @@ public class OutputView {
         }
     }
 
+    public void printReadProductsMessage() {
+        printEmptyLine();
+        printMessage(OutputMessage.READ_PRODUCT_MESSAGE);
+    }
+
     public void printEmptyLine() {
         System.out.println();
     }

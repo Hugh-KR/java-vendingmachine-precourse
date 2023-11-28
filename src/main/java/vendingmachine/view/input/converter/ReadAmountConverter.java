@@ -1,17 +1,17 @@
-package vendingmachine.view.input.validator;
+package vendingmachine.view.input.converter;
 
 import vendingmachine.exception.CustomIllegalArgumentException;
 import vendingmachine.exception.amount.AmountExceptionStatus;
 
-public class ReadAmountValidator {
+public class ReadAmountConverter {
 
-    static final ReadAmountValidator READ_AMOUNT_VALIDATOR = new ReadAmountValidator();
+    static final ReadAmountConverter READ_AMOUNT_CONVERTER = new ReadAmountConverter();
 
-    private ReadAmountValidator() {
+    private ReadAmountConverter() {
     }
 
-    public static int validateAmount(final String amount) {
-        return READ_AMOUNT_VALIDATOR.parseAmount(amount);
+    public static int convertAmount(final String amount) {
+        return READ_AMOUNT_CONVERTER.parseAmount(amount);
     }
 
     private int parseAmount(final String amount) {
