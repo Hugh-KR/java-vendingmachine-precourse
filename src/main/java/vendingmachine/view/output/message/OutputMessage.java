@@ -9,10 +9,7 @@ public enum OutputMessage {
     READ_CHANGE_MESSAGE("잔돈"),
 
     PRINT_COIN_IN_POSSESSION_MESSAGE("자판기가 보유한 동전"),
-    PRINT_FIVE_HUNDRED_WON_COIN("500원 - %d개"),
-    PRINT_ONE_HUNDRED_WON_COIN("100원 - %d개"),
-    PRINT_FIFTY_WON_COIN("50원 - %d개"),
-    PRINT_TEN_WON_COIN("10원 - %d개");
+    PRINT_COIN_MESSAGE("%d원 - %d개");
 
     private final String message;
 

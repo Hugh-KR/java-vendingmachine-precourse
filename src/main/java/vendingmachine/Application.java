@@ -1,12 +1,12 @@
 package vendingmachine;
 
-import vendingmachine.controller.Controller;
+import vendingmachine.controller.MachineController;
 
 public class Application {
-    private final Controller controller;
+    private final MachineController machineController;
 
     public Application(final AppConfig appConfig) {
-        this.controller = appConfig.controller;
+        this.machineController = appConfig.machineController;
     }
 
     public static void main(String[] args) {
@@ -15,6 +15,6 @@ public class Application {
     }
 
     public void run() {
-        controller.run();
+        machineController.run();
     }
 }

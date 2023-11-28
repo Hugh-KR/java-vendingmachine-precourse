@@ -24,5 +24,4 @@ public class AmountValidator {
     private boolean isPositive(final int amount) {
         return Constant.ZERO.getConstant() < amount;
     }
-
 }

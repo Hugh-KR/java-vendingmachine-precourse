@@ -1,7 +1,7 @@
 package vendingmachine;
 
 
-import vendingmachine.controller.Controller;
+import vendingmachine.controller.MachineController;
 import vendingmachine.service.Service;
 import vendingmachine.view.input.InputView;
 import vendingmachine.view.output.OutputView;
@@ -10,7 +10,7 @@ public class AppConfig {
 
     private static final AppConfig APP_CONFIG = new AppConfig();
 
-    public final Controller controller;
+    public final MachineController machineController;
     public final Service service;
     public final InputView inputView;
     public final OutputView outputView;
@@ -19,7 +19,7 @@ public class AppConfig {
         this.outputView = initOutputView();
         this.inputView = initInputView(outputView);
         this.service = initGameService();
-        this.controller = initController(service, inputView, outputView);
+        this.machineController = initMachineController(service, inputView, outputView);
     }
 
     public static AppConfig getInstance() {
@@ -38,9 +38,9 @@ public class AppConfig {
         return new Service();
     }
 
-    private Controller initController(final Service service,
-                                      final InputView inputView,
-                                      final OutputView outputView) {
-        return new Controller(service, inputView, outputView);
+    private MachineController initMachineController(final Service service,
+                                             final InputView inputView,
+                                             final OutputView outputView) {
+        return new MachineController(service, inputView, outputView);
     }
 }

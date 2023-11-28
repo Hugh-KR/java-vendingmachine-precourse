@@ -9,4 +9,13 @@ public class Amount {
         AmountValidator.validateAmount(amount);
         this.amount = amount;
     }
+
+
+    public void depositAmountOfMachine(final int amount) {
+
+    }
+
+    public int getAmount() {
+        return this.amount;
+    }
 }
