@@ -33,12 +33,16 @@ public enum Coin {
 
     public static List<Coin> getCoins(final int amount) {
         return Arrays.stream(Coin.values())
-                .filter(coin -> coin.isBiggerThan(amount))
+                .filter(coin -> coin.isSmallerThan(amount))
                 .toList();
     }
 
-    private boolean isBiggerThan(final int amount) {
+    public boolean isSmallerThan(final int amount) {
         return this.amount <= amount;
+    }
+
+    public boolean isBiggerThan(final int amount) {
+        return !isSmallerThan(amount);
     }
 
     public int getAmount() {

@@ -16,12 +16,16 @@ public class ReadProductsConverter {
     }
 
     public static List<ProductDto> convertProducts(final String products) {
-        final List<String> detail = READ_PRODUCTS_CONVERTER.splitWithSemiColon(products);
+        return READ_PRODUCTS_CONVERTER.toDtos(products);
+    }
+    private List<ProductDto> toDtos(final String products) {
+        final List<String> detail = READ_PRODUCTS_CONVERTER.splitWithSemiColon(isNullProduct(products));
 
         return detail.stream()
                 .map(READ_PRODUCTS_CONVERTER::toDto)
                 .toList();
     }
+
 
     private List<String> splitWithSemiColon(final String products) {
         return Arrays.stream(Delimiter.splitWithSemiColon(isNullProduct(products)))
@@ -30,15 +34,14 @@ public class ReadProductsConverter {
     }
 
     private ProductDto toDto(final String product) {
-        isNullProduct(product);
-        List<String> detail = splitWithComma(product);
+        List<String> detail = splitWithComma(isNullProduct(product));
         validateIsOutOfRange(detail);
 
         final String name = detail.get(0);
         final int price = parseNumber(detail.get(1));
         final int quantity = parseNumber(detail.get(2));
         ReadProductsValidator.validateProducts(price, quantity);
-
+        System.out.println("여기까ㄹ");
         return new ProductDto(name, price, quantity);
     }
 
@@ -62,6 +65,7 @@ public class ReadProductsConverter {
 
     private List<String> splitWithComma(final String product) {
         isEnclosedInBracket(product);
+
         final String removedProduct = Delimiter.removeBracket(product);
         return Arrays.stream(Delimiter.splitWithComma(removedProduct))
                 .map(String::trim)
@@ -69,7 +73,7 @@ public class ReadProductsConverter {
     }
 
     private void isEnclosedInBracket(final String product) {
-        if (Delimiter.isEnclosedInBracket(product)) {
+        if (!Delimiter.isEnclosedInBracket(product)) {
             throw new CustomIllegalArgumentException(ProductExceptionStatus.IS_WRONG_PRODUCT);
         }
     }

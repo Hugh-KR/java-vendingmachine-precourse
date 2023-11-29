@@ -8,6 +8,8 @@ import vendingmachine.domain.machine.coin.Coin;
 import vendingmachine.domain.machine.coin.CoinStorage;
 import vendingmachine.domain.machine.coin.Filler;
 import vendingmachine.domain.machine.product.Product;
+import vendingmachine.domain.user.Balance;
+import vendingmachine.domain.user.User;
 import vendingmachine.dto.CoinStorageDto;
 import vendingmachine.dto.ProductDto;
 import vendingmachine.service.Service;
@@ -35,15 +37,16 @@ public class MachineController {
         final List<Product> products = registerProductsOfMachine();
         machine.saveProducts(products);
 
+        final User user = depositAmountOfUser();
+        announcePurchaseProducts(user, machine);
 
-
-
+        announceRefundChangesOfUser(user, machine);
     }
 
 
     private Machine depositAmountOfMachine() {
         return ExceptionHandler.getExceptionHandler(() -> {
-            final Amount amount = new Amount(inputView.readAmount());
+            final Amount amount = new Amount(inputView.readAmountOfMachine());
             final Filler filler = new Filler(amount.getAmount());
 
             List<Coin> coins = filler.getCoins();
@@ -62,5 +65,44 @@ public class MachineController {
             final List<ProductDto> productDtos = inputView.readProducts();
             return productDtos.stream().map(ProductDto::toEntity).toList();
         });
+    }
+
+    private User depositAmountOfUser() {
+        return ExceptionHandler.getExceptionHandler(() -> {
+            final Balance balance = new Balance(inputView.readAmountOfUser());
+            return new User(balance);
+        });
+    }
+
+    private void announcePurchaseProducts(final User user, final Machine machine) {
+        while (isPossibleToPurchase(user, machine)) {
+            announceCurrentAmountOfUser(user);
+            final String product = purchaseProduct();
+            user.purchase(product, machine);
+        }
+    }
+
+    private void announceCurrentAmountOfUser(final User user) {
+        outputView.printCurrentAmountOfUserMessage(user.getCurrentAmount());
+    }
+
+    private String purchaseProduct() {
+        return ExceptionHandler.getExceptionHandler(inputView::readPurchaseProduct);
+    }
+
+    private boolean isPossibleToPurchase(final User user, final Machine machine) {
+        return user.hasNotEnoughAmount(machine) || machine.isAllProductSoldOut();
+    }
+
+    private void announceRefundChangesOfUser(final User user, final Machine machine) {
+        announceCurrentAmountOfUser(user);
+        machine.refund(user);
+        announceChangedCoins(user);
+    }
+
+    private void announceChangedCoins(final User user) {
+        final List<CoinStorageDto> changesOfMachine = user.getRefundCoinStatuses();
+        outputView.printChangesOfMachineMessage();
+        outputView.printChangesOfMachine(changesOfMachine);
     }
 }

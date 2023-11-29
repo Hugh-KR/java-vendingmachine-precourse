@@ -5,6 +5,8 @@ import vendingmachine.domain.machine.coin.Coin;
 import vendingmachine.domain.machine.coin.CoinStorage;
 import vendingmachine.domain.machine.product.Product;
 import vendingmachine.domain.machine.product.ProductStorage;
+import vendingmachine.domain.user.Balance;
+import vendingmachine.domain.user.User;
 import vendingmachine.dto.CoinStorageDto;
 
 public class Machine {
@@ -24,9 +26,28 @@ public class Machine {
         productStorage.save(products);
     }
 
+    public void purchaseProduct(final Balance balance, final String productName) {
+        Product product = productStorage.findOne(productName);
+        product.sell(balance);
+    }
+
+    public void refund(final User user) {
+        coinStorage.refund(user);
+    }
+
+    public boolean isPossibleToUseWith(final Balance balance) {
+        return productStorage.isPossibleToUseWith(balance);
+    }
+
+    public boolean isAllProductSoldOut() {
+        return productStorage.isAllSoldOut();
+    }
+
     public List<CoinStorageDto> getCoinsOfMachine() {
         return coinStorage.getCoinsStatus();
     }
 
-
+    public List<CoinStorageDto> getChangesOfMachine() {
+        return coinStorage.getChangedCoinsStatus();
+    }
 }

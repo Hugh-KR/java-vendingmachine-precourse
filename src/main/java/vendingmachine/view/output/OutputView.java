@@ -14,7 +14,7 @@ public class OutputView {
         this.printMessage(outputMessage.getMessage());
     }
 
-    public void printReadAmountMessage() {
+    public void printReadAmountOfMachineMessage() {
         printMessage(OutputMessage.READ_AMOUNT_IN_POSSESSION_MESSAGE);
     }
 
@@ -23,8 +23,8 @@ public class OutputView {
         printMessage(OutputMessage.PRINT_COIN_IN_POSSESSION_MESSAGE);
     }
 
-    public void printCoinsOfMachine(final List<CoinStorageDto> coinsOfMachine) {
-        for (CoinStorageDto coinStorageDto : coinsOfMachine) {
+    public void printCoinsOfMachine(final List<CoinStorageDto> coinStatuses) {
+        for (CoinStorageDto coinStorageDto : coinStatuses) {
             printMessage(String.format(
                     OutputMessage.PRINT_COIN_MESSAGE.getMessage(),
                     coinStorageDto.getCoin(),
@@ -36,6 +36,39 @@ public class OutputView {
     public void printReadProductsMessage() {
         printEmptyLine();
         printMessage(OutputMessage.READ_PRODUCT_MESSAGE);
+    }
+
+    public void printReadAmountOfUserMessage() {
+        printEmptyLine();
+        printMessage(OutputMessage.READ_DEPOSIT_AMOUNT_OF_USER_MESSAGE);
+    }
+
+    public void printCurrentAmountOfUserMessage(final int amount) {
+        printEmptyLine();
+        final String message = String.format(
+                OutputMessage.PRINT_CURRENT_AMOUNT_OF_USER_MESSAGE.getMessage(),
+                amount
+        );
+        printMessage(message);
+    }
+
+    public void printPurchaseProductMessage() {
+        printMessage(OutputMessage.READ_PRODUCTS_TO_BUY_MESSAGE);
+    }
+
+
+    public void printChangesOfMachineMessage() {
+        printMessage(OutputMessage.READ_CHANGE_MESSAGE);
+    }
+
+    public void printChangesOfMachine(final List<CoinStorageDto> coinStatuses) {
+        for (CoinStorageDto coinStorageDto : coinStatuses) {
+            printMessage(String.format(
+                    OutputMessage.PRINT_COIN_MESSAGE.getMessage(),
+                    coinStorageDto.getCoin(),
+                    coinStorageDto.getCount()
+            ));
+        }
     }
 
     public void printEmptyLine() {

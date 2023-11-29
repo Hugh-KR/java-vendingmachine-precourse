@@ -19,8 +19,8 @@ public class InputView {
         return Console.readLine();
     }
 
-    public int readAmount() {
-        outputView.printReadAmountMessage();
+    public int readAmountOfMachine() {
+        outputView.printReadAmountOfMachineMessage();
         return ReadAmountConverter.convertAmount(readLine());
     }
 
@@ -29,7 +29,15 @@ public class InputView {
         return ReadProductsConverter.convertProducts(readLine());
     }
 
+    public int readAmountOfUser() {
+        outputView.printReadAmountOfUserMessage();
+        return ReadAmountConverter.convertAmount(readLine());
+    }
 
+    public String readPurchaseProduct() {
+        outputView.printPurchaseProductMessage();
+        return readLine();
+    }
 
 
 }
