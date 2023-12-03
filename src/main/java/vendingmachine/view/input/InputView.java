@@ -38,6 +38,4 @@ public class InputView {
         outputView.printPurchaseProductMessage();
         return readLine();
     }
-
-
 }

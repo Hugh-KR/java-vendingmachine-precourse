@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import vendingmachine.domain.user.Balance;
 import vendingmachine.domain.user.User;
 import vendingmachine.dto.CoinStorageDto;
 
@@ -24,7 +23,8 @@ public class CoinStorage {
     }
 
     public void save(final Coin coin) {
-        coins.put(coin, coins.getOrDefault(coin, 0) + 1);
+        final int count = coins.get(coin);
+        coins.put(coin, count + 1);
     }
 
     public List<CoinStorageDto> getCoinsStatus() {
@@ -44,14 +44,13 @@ public class CoinStorage {
             if (isEmptyCoin(coin)) {
                 continue;
             }
-            final int count = entry.getValue();
+            final Integer count = entry.getValue();
             changedCoinsStatus.add(toDto(coin, count));
         }
         return changedCoinsStatus;
     }
 
     public void refund(final User user) {
-
         for (Coin coin : coins.keySet()) {
             if (coin.isBiggerThan(user.getCurrentAmount())) {
                 continue;
@@ -69,7 +68,7 @@ public class CoinStorage {
                 break;
             }
             user.saveRefundCoin(coin);
-            int count = coins.get(coin);
+            final int count = coins.get(coin);
             coins.put(coin, count - 1);
             user.withdrawAmount(coin.getAmount());
         }

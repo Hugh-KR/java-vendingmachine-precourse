@@ -1,31 +1,28 @@
 package vendingmachine.controller;
 
+import java.security.Provider.Service;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import vendingmachine.domain.machine.Machine;
 import vendingmachine.domain.machine.amount.Amount;
 import vendingmachine.domain.machine.coin.Coin;
-import vendingmachine.domain.machine.coin.CoinStorage;
 import vendingmachine.domain.machine.coin.Filler;
 import vendingmachine.domain.machine.product.Product;
 import vendingmachine.domain.user.Balance;
 import vendingmachine.domain.user.User;
 import vendingmachine.dto.CoinStorageDto;
 import vendingmachine.dto.ProductDto;
-import vendingmachine.service.Service;
 import vendingmachine.view.input.InputView;
 import vendingmachine.view.output.OutputView;
 
 public class MachineController {
 
-    private final Service service;
     private final InputView inputView;
     private final OutputView outputView;
 
-    public MachineController(final Service service,
-                             final InputView inputView,
+    public MachineController(final InputView inputView,
                              final OutputView outputView) {
-        this.service = service;
         this.inputView = inputView;
         this.outputView = outputView;
     }
@@ -63,7 +60,11 @@ public class MachineController {
     private List<Product> registerProductsOfMachine() {
         return ExceptionHandler.getExceptionHandler(() -> {
             final List<ProductDto> productDtos = inputView.readProducts();
-            return productDtos.stream().map(ProductDto::toEntity).toList();
+            return Collections.unmodifiableList(
+                    productDtos.stream()
+                            .map(ProductDto::toEntity)
+                            .collect(Collectors.toList())
+            );
         });
     }
 

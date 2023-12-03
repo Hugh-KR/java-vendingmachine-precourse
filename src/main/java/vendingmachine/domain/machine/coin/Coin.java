@@ -1,10 +1,10 @@
 package vendingmachine.domain.machine.coin;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import vendingmachine.exception.CustomIllegalArgumentException;
-import vendingmachine.exception.ExceptionStatus;
-import vendingmachine.exception.amount.AmountExceptionStatus;
 import vendingmachine.exception.coin.CoinExceptionStatus;
 
 public enum Coin {
@@ -32,9 +32,11 @@ public enum Coin {
     }
 
     public static List<Coin> getCoins(final int amount) {
-        return Arrays.stream(Coin.values())
-                .filter(coin -> coin.isSmallerThan(amount))
-                .toList();
+        return Collections.unmodifiableList(
+                Arrays.stream(Coin.values())
+                        .filter(coin -> coin.isSmallerThan(amount))
+                        .collect(Collectors.toList())
+        );
     }
 
     public boolean isSmallerThan(final int amount) {

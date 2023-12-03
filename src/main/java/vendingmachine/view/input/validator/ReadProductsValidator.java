@@ -14,10 +14,17 @@ public class ReadProductsValidator {
     private ReadProductsValidator() {
     }
 
-    public static void validateProducts(final int price, final int quantity) {
+    public static void validateProducts(final String name, final int price, final int quantity) {
+        READ_PRODUCTS_VALIDATOR.validateNameIsEmpty(name);
         READ_PRODUCTS_VALIDATOR.validatePriceIsMoreThanMinimum(price);
         READ_PRODUCTS_VALIDATOR.validatePriceIsMultipleOfTen(price);
         READ_PRODUCTS_VALIDATOR.validateQuantityIsPositive(quantity);
+    }
+
+    private void validateNameIsEmpty(final String name) {
+        if (name.isEmpty()) {
+            throw new CustomIllegalArgumentException(ProductExceptionStatus.IS_WRONG_PRODUCT);
+        }
     }
 
     private void validatePriceIsMoreThanMinimum(final int price) {

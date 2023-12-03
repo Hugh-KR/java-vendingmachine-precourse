@@ -1,7 +1,9 @@
 package vendingmachine.view.input.converter;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import vendingmachine.dto.ProductDto;
 import vendingmachine.exception.CustomIllegalArgumentException;
 import vendingmachine.exception.product.ProductExceptionStatus;
@@ -21,27 +23,31 @@ public class ReadProductsConverter {
     private List<ProductDto> toDtos(final String products) {
         final List<String> detail = READ_PRODUCTS_CONVERTER.splitWithSemiColon(isNullProduct(products));
 
-        return detail.stream()
-                .map(READ_PRODUCTS_CONVERTER::toDto)
-                .toList();
+        return Collections.unmodifiableList(
+                detail.stream()
+                        .map(READ_PRODUCTS_CONVERTER::toDto)
+                        .collect(Collectors.toList())
+        );
     }
 
 
     private List<String> splitWithSemiColon(final String products) {
-        return Arrays.stream(Delimiter.splitWithSemiColon(isNullProduct(products)))
+        return Collections.unmodifiableList(
+                Arrays.stream(Delimiter.splitWithSemiColon(isNullProduct(products)))
                 .map(String::trim)
-                .toList();
+                .collect(Collectors.toList())
+        );
     }
 
     private ProductDto toDto(final String product) {
         List<String> detail = splitWithComma(isNullProduct(product));
         validateIsOutOfRange(detail);
 
-        final String name = detail.get(0);
+        final String name = isNullProduct(detail.get(0));
         final int price = parseNumber(detail.get(1));
         final int quantity = parseNumber(detail.get(2));
-        ReadProductsValidator.validateProducts(price, quantity);
-        System.out.println("여기까ㄹ");
+
+        ReadProductsValidator.validateProducts(name, price, quantity);
         return new ProductDto(name, price, quantity);
     }
 
@@ -67,9 +73,11 @@ public class ReadProductsConverter {
         isEnclosedInBracket(product);
 
         final String removedProduct = Delimiter.removeBracket(product);
-        return Arrays.stream(Delimiter.splitWithComma(removedProduct))
-                .map(String::trim)
-                .toList();
+        return Collections.unmodifiableList(
+                Arrays.stream(Delimiter.splitWithComma(removedProduct))
+                        .map(String::trim)
+                        .collect(Collectors.toList())
+        );
     }
 
     private void isEnclosedInBracket(final String product) {

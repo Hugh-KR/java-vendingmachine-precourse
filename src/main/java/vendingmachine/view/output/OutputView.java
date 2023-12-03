@@ -58,7 +58,7 @@ public class OutputView {
 
 
     public void printChangesOfMachineMessage() {
-        printMessage(OutputMessage.READ_CHANGE_MESSAGE);
+        printMessage(OutputMessage.PRINT_CHANGE_MESSAGE);
     }
 
     public void printChangesOfMachine(final List<CoinStorageDto> coinStatuses) {

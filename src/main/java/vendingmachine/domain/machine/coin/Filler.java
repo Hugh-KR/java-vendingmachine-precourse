@@ -3,6 +3,7 @@ package vendingmachine.domain.machine.coin;
 import camp.nextstep.edu.missionutils.Randoms;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Filler {
 
@@ -27,7 +28,8 @@ public class Filler {
     private Coin pickCoinInList(final int amount) {
         final List<Coin> coinsForPick = Coin.getCoins(amount);
         final List<Integer> numbers = coinsForPick.stream()
-                .map(Coin::getAmount).toList();
+                .map(Coin::getAmount)
+                .collect(Collectors.toList());
 
         final int number = Randoms.pickNumberInList(numbers);
         return Coin.of(number);
