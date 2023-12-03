@@ -1,7 +1,5 @@
 package vendingmachine.controller;
 
-import java.security.Provider.Service;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import vendingmachine.domain.machine.Machine;
@@ -13,6 +11,7 @@ import vendingmachine.domain.user.Balance;
 import vendingmachine.domain.user.User;
 import vendingmachine.dto.CoinStorageDto;
 import vendingmachine.dto.ProductDto;
+import vendingmachine.exception.CustomIllegalArgumentException;
 import vendingmachine.view.input.InputView;
 import vendingmachine.view.output.OutputView;
 
@@ -28,26 +27,38 @@ public class MachineController {
     }
 
     public void run() {
-        final Machine machine = depositAmountOfMachine();
-        announceDepositedCoins(machine);
+        final Machine machine = initMachine();
+        final User user = initUser();
 
-        final List<Product> products = registerProductsOfMachine();
-        machine.saveProducts(products);
-
-        final User user = depositAmountOfUser();
         announcePurchaseProducts(user, machine);
-
         announceRefundChangesOfUser(user, machine);
     }
 
+    private Machine initMachine() {
+        return ExceptionHandler.getExceptionHandler(() -> {
+            Machine machine = depositAmountOfMachine();
+            announceDepositedCoins(machine);
+            return registerProductsOfMachine(machine);
+        });
+    }
 
     private Machine depositAmountOfMachine() {
         return ExceptionHandler.getExceptionHandler(() -> {
             final Amount amount = new Amount(inputView.readAmountOfMachine());
             final Filler filler = new Filler(amount.getAmount());
-
-            List<Coin> coins = filler.getCoins();
+            final List<Coin> coins = filler.getCoins();
             return new Machine(coins);
+        });
+    }
+
+    private Machine registerProductsOfMachine(final Machine machine) {
+        return ExceptionHandler.getExceptionHandler(() -> {
+            final List<ProductDto> productDtos = inputView.readProducts();
+            final List<Product> products = productDtos.stream()
+                    .map(ProductDto::toEntity)
+                    .collect(Collectors.toList());
+            machine.saveProducts(products);
+            return machine;
         });
     }
 
@@ -57,18 +68,7 @@ public class MachineController {
         outputView.printCoinsOfMachine(coinsOfMachine);
     }
 
-    private List<Product> registerProductsOfMachine() {
-        return ExceptionHandler.getExceptionHandler(() -> {
-            final List<ProductDto> productDtos = inputView.readProducts();
-            return Collections.unmodifiableList(
-                    productDtos.stream()
-                            .map(ProductDto::toEntity)
-                            .collect(Collectors.toList())
-            );
-        });
-    }
-
-    private User depositAmountOfUser() {
+    private User initUser() {
         return ExceptionHandler.getExceptionHandler(() -> {
             final Balance balance = new Balance(inputView.readAmountOfUser());
             return new User(balance);
@@ -76,19 +76,19 @@ public class MachineController {
     }
 
     private void announcePurchaseProducts(final User user, final Machine machine) {
-        while (isPossibleToPurchase(user, machine)) {
-            announceCurrentAmountOfUser(user);
-            final String product = purchaseProduct();
-            user.purchase(product, machine);
-        }
+        do {
+            try {
+                announceCurrentAmountOfUser(user);
+                final String product = inputView.readPurchaseProduct();
+                user.purchase(product, machine);
+            } catch (CustomIllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (isPossibleToPurchase(user, machine));
     }
 
     private void announceCurrentAmountOfUser(final User user) {
         outputView.printCurrentAmountOfUserMessage(user.getCurrentAmount());
-    }
-
-    private String purchaseProduct() {
-        return ExceptionHandler.getExceptionHandler(inputView::readPurchaseProduct);
     }
 
     private boolean isPossibleToPurchase(final User user, final Machine machine) {

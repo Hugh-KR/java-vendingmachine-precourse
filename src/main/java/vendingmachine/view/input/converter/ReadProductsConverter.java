@@ -18,11 +18,12 @@ public class ReadProductsConverter {
     }
 
     public static List<ProductDto> convertProducts(final String products) {
+        READ_PRODUCTS_CONVERTER.isEmptyProduct(products);
         return READ_PRODUCTS_CONVERTER.toDtos(products);
     }
-    private List<ProductDto> toDtos(final String products) {
-        final List<String> detail = READ_PRODUCTS_CONVERTER.splitWithSemiColon(isNullProduct(products));
 
+    private List<ProductDto> toDtos(final String products) {
+        final List<String> detail = READ_PRODUCTS_CONVERTER.splitWithSemiColon(products);
         return Collections.unmodifiableList(
                 detail.stream()
                         .map(READ_PRODUCTS_CONVERTER::toDto)
@@ -30,10 +31,9 @@ public class ReadProductsConverter {
         );
     }
 
-
     private List<String> splitWithSemiColon(final String products) {
         return Collections.unmodifiableList(
-                Arrays.stream(Delimiter.splitWithSemiColon(isNullProduct(products)))
+                Arrays.stream(Delimiter.splitWithSemiColon(products))
                 .map(String::trim)
                 .collect(Collectors.toList())
         );
@@ -49,6 +49,17 @@ public class ReadProductsConverter {
 
         ReadProductsValidator.validateProducts(name, price, quantity);
         return new ProductDto(name, price, quantity);
+    }
+
+    private List<String> splitWithComma(final String product) {
+        isEnclosedInBracket(product);
+
+        final String removedProduct = Delimiter.removeBracket(product);
+        return Collections.unmodifiableList(
+                Arrays.stream(Delimiter.splitWithComma(removedProduct))
+                        .map(String::trim)
+                        .collect(Collectors.toList())
+        );
     }
 
     private int parseNumber(final String detail) {
@@ -69,17 +80,6 @@ public class ReadProductsConverter {
         return detail.size() != 3;
     }
 
-    private List<String> splitWithComma(final String product) {
-        isEnclosedInBracket(product);
-
-        final String removedProduct = Delimiter.removeBracket(product);
-        return Collections.unmodifiableList(
-                Arrays.stream(Delimiter.splitWithComma(removedProduct))
-                        .map(String::trim)
-                        .collect(Collectors.toList())
-        );
-    }
-
     private void isEnclosedInBracket(final String product) {
         if (!Delimiter.isEnclosedInBracket(product)) {
             throw new CustomIllegalArgumentException(ProductExceptionStatus.IS_WRONG_PRODUCT);
@@ -90,6 +90,12 @@ public class ReadProductsConverter {
         try {
             return products.trim();
         } catch (NullPointerException e) {
+            throw new CustomIllegalArgumentException(ProductExceptionStatus.IS_WRONG_PRODUCT);
+        }
+    }
+
+    private void isEmptyProduct(final String products) {
+        if (isNullProduct(products).isEmpty()) {
             throw new CustomIllegalArgumentException(ProductExceptionStatus.IS_WRONG_PRODUCT);
         }
     }

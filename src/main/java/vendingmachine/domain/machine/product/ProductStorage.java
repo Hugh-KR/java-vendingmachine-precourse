@@ -31,7 +31,7 @@ public class ProductStorage {
 
     public Product findOne(final String productName) {
         return Optional.ofNullable(productStorage.get(productName))
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new CustomIllegalArgumentException(ProductExceptionStatus.IS_WRONG_PRODUCT));
     }
 
     public boolean isPossibleToUseWith(final Balance balance) {
